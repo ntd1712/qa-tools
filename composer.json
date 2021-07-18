@@ -1,0 +1,48 @@
+{
+  "name": "chaos/tools",
+  "description": "Common PHP QA tools",
+  "keywords": [
+    "vietnam",
+    "php",
+    "qa",
+    "tools"
+  ],
+  "homepage": "https://github.com/ntd1712",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ntd1712",
+      "email": "ntd1712@mail.com"
+    }
+  ],
+  "require": {
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "phpmd/phpmd": "^2.10",
+    "phpstan/phpstan": "^0.12",
+    "squizlabs/php_codesniffer": "^3.6",
+    "vimeo/psalm": "^4.8"
+  },
+  "require-dev": {
+    "sebastian/phpcpd": "^5.0 || ^6.0",
+    "phpmetrics/phpmetrics": "^2.7",
+    "mayflower/php-codebrowser": "^3.0"
+  },
+  "scripts": {
+    "ca": [
+      "vendor/bin/phpstan analyse -c phpstan.neon --error-format=prettyJson modules app > report.phpstan.json || true",
+      "vendor/bin/psalm --no-cache --report=report.psalm.txt modules app || true"
+    ],
+    "cb": "vendor/bin/phpcb -v --output=report_phpcb.html --source=modules --source=app",
+    "cf": [
+      "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --path-mode=intersection --verbose modules app",
+      "vendor/bin/phpcbf --basepath=. modules app || true"
+    ],
+    "cs": [
+      "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.php --diff --dry-run --path-mode=intersection --verbose modules app > report.php-cs-fixer.txt || true",
+      "vendor/bin/phpcs --basepath=. --report-file=report.phpcs.txt --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 modules app"
+    ],
+    "cpd": "vendor/bin/phpcpd --fuzzy --progress modules app > report_phpcpd.txt || true",
+    "md": "vendor/bin/phpmd modules,app html phpmd.xml --ignore-violations-on-exit > report.phpmd.html",
+    "metrics": "vendor/bin/phpmetrics --report-html=report_phpmetrics.html modules app"
+  }
+}
